@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Finder files
+.DS_Store
+
+# VS code files
+.vscode
+
 # C extensions
 *.so
 
