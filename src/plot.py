@@ -1,16 +1,11 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.signal import find_peaks
 
 
 def get_audio_peaks(y: np.ndarray, sr: int, height: float = 0.0) -> np.ndarray:
     time = np.linspace(0, len(y) / sr, len(y))
-    peaks, _ = find_peaks(
-        y, 
-        distance=100,
-        height=height,
-        prominence=0.01 
-    )
+    peaks, _ = find_peaks(y, distance=100, height=height, prominence=0.01)
     peaks_time = time[peaks]
     return peaks_time
 
@@ -21,22 +16,22 @@ def plot_period(y: np.ndarray, sr: int) -> None:
         T_start = peaks_time[0]
         T_end = peaks_time[1]
 
-        plt.axvline(x=T_start, color='red', linestyle='--')
-        plt.axvline(x=T_end,   color='red', linestyle='--')
+        plt.axvline(x=T_start, color="red", linestyle="--")
+        plt.axvline(x=T_end, color="red", linestyle="--")
 
         arrow_y = np.max(np.abs(y)) * 0.8
         plt.annotate(
-            '', 
-            xy=(T_end, arrow_y), 
+            "",
+            xy=(T_end, arrow_y),
             xytext=(T_start, arrow_y),
-            arrowprops=dict(arrowstyle='<->', color='red', lw=1.5)
+            arrowprops=dict(arrowstyle="<->", color="red", lw=1.5),
         )
         plt.text(
             (T_start + T_end) / 2,
             arrow_y + 0.05 * np.max(np.abs(y)),
-            f'Период колебаний, T', 
-            color='red', 
-            ha='center'
+            f"Период колебаний, T",
+            color="red",
+            ha="center",
         )
 
 
@@ -57,10 +52,10 @@ def plot_audio_signal(
 
     if max_y is not None:
         plt.ylim(bottom=-max_y, top=max_y)
-    
+
     if show_signal_period:
         plot_period(y=y, sr=sr)
-    
+
     plt.grid(True)
 
     plt.show()
@@ -68,12 +63,6 @@ def plot_audio_signal(
 
 def get_audio_peaks(y: np.ndarray, sr: int, height: float = 0.0) -> np.ndarray:
     time = np.linspace(0, len(y) / sr, len(y))
-    peaks, _ = find_peaks(
-        y, 
-        distance=100,
-        height=height,
-        prominence=0.01 
-    )
+    peaks, _ = find_peaks(y, distance=100, height=height, prominence=0.01)
     peaks_time = time[peaks]
     return peaks_time
-
