@@ -8,8 +8,8 @@ import sounddevice as sd
 
 SR = 44100
 BLOCKSIZE = 512
-BUFFERSIZE = SR * 5
-TUNING_TOLERANCE = 1.0
+BUFFERSIZE = SR * 1
+TUNING_TOLERANCE = 2.0
 
 raw_audio_data_queue = queue.Queue()
 latest_freq = 0.0
@@ -98,7 +98,7 @@ stream = sd.InputStream(
     callback=callback,
     blocksize=BLOCKSIZE,
     samplerate=SR,
-    dtype='float32',
+    dtype="float32",
     channels=1,
 )
 audio_processing_thread = threading.Thread(
