@@ -8,7 +8,7 @@ import sounddevice as sd
 
 SR = 44100
 BLOCKSIZE = 512
-BUFFERSIZE = SR
+BUFFERSIZE = SR * 5
 TUNING_TOLERANCE = 1.0
 
 raw_audio_data_queue = queue.Queue()
@@ -18,7 +18,7 @@ latest_note = ""
 
 
 def callback(data: np.ndarray, *args, **kwargs) -> None:
-    raw_audio_data_queue.put_nowait(data)
+    raw_audio_data_queue.put_nowait(data.copy())
 
 
 def predict_freq(y: np.ndarray) -> float | None:
@@ -58,6 +58,15 @@ def process_raw_audio_data_loop() -> None:
                 y = np.concatenate(buffer)
                 freq = predict_freq(y)
 
+                # from scipy.io.wavfile import write
+                # y = np.clip(y, -1.0, 1.0)
+
+                # # Преобразуем float32 в int16
+                # y_int16 = (y * 32767).astype(np.int16)
+
+                # # Сохраняем
+                # write("output.wav", SR, y_int16.reshape(-1, 1))
+
                 if freq:
                     note, target = hz_to_nearest_note_freq(freq)
                     latest_freq = freq
@@ -85,7 +94,13 @@ def plot_tuner_data_loop() -> None:
         plt.pause(0.3)
 
 
-stream = sd.InputStream(callback=callback, blocksize=BLOCKSIZE, samplerate=SR)
+stream = sd.InputStream(
+    callback=callback,
+    blocksize=BLOCKSIZE,
+    samplerate=SR,
+    dtype='float32',
+    channels=1,
+)
 audio_processing_thread = threading.Thread(
     target=process_raw_audio_data_loop, daemon=True
 )
